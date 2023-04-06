@@ -7,6 +7,12 @@ Original file is located at
     https://colab.research.google.com/drive/1yEtvmZJNUHxWrCNwFc74HeAquzFerN7y
 """
 
+from pywsd.similarity import max_similarity
+from pywsd.lesk import adapted_lesk
+from pywsd.lesk import simple_lesk
+from pywsd.lesk import cosine_lesk
+from nltk.corpus import wordnet as wn
+
 #Step 1- Import the text file/article that has to be used for MCQ generation
 
 file=open("article.txt","r") #"r" deontes read version open
@@ -102,11 +108,7 @@ nltk.download('all')
 
 #Step 5- Get the sense of the word. In order to attain a quality set of distractors we need to get the right sense of the keyword. This is explained in detail in the seperate alogrithm documentation
 
-from pywsd.similarity import max_similarity
-from pywsd.lesk import adapted_lesk
-from pywsd.lesk import simple_lesk
-from pywsd.lesk import cosine_lesk
-from nltk.corpus import wordnet as wn
+
 def getWordSense(sent,word):
     word=word.lower() 
     if len(word.split())>0: #Splits the word with underscores(_) instead of spaces if there are multiple words
