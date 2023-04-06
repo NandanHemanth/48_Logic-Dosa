@@ -32,9 +32,18 @@ class Blockchain:
             'proof': proof
         }
 
+        #adding the newly created block to the blockchain
         self.current_transactions = []
         self.chain.append(block)
         return block
     
-    def new_transaction(self,)
+    def new_transaction(self, sender,  recipient, amount):
+        self.current_transactions.append.append({
+            'sender': sender,
+            'recipient': recipient,
+            'amount': amount,
+        })
+
+        
+
 
