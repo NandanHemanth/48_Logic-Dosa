@@ -74,7 +74,6 @@ def splitTextToSents(art):
 sents=splitTextToSents(text) #Achieve a well splitted set of sentences from the text article
 #print(sents)
 
-pip install flashtext
 
 #Step 4- Map the sentences which contain the keywords to the related keywords so that we can easily lookup the sentences related to the keywords
 
@@ -97,7 +96,7 @@ def mapSents(impWords,sents):
 mappedSents=mapSents(important_words,sents) #Achieve the sentences that contain the keywords and map those sentences to the keywords using this function
 #print(mappedSents)
 
-pip install pywsd
+
 
 nltk.download('all')
 
