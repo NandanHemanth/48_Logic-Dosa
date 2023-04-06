@@ -11,33 +11,26 @@ from pywsd.similarity import max_similarity
 from pywsd.lesk import adapted_lesk
 from pywsd.lesk import simple_lesk
 from pywsd.lesk import cosine_lesk
+from flashtext import KeywordProcessor
 from nltk.corpus import wordnet as wn
+from nltk.tokenize import sent_tokenize
+import requests
+import json
+import nltk
+from sklearn.feature_extraction.text import TfidfVectorizer
+# nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('popular')
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('maxent_ne_chunker')
+# nltk.download('words')
+# nltk.download('all')
 
 #Step 1- Import the text file/article that has to be used for MCQ generation
 
 file=open("article.txt","r") #"r" deontes read version open
 text=file.read()
 
-import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('popular')
-#Importing the needed files and packages
-
-import nltk
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-# download necessary NLTK data (if needed)
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
-nltk.download('words')
-
-# sample text article
-text = "John Smith is the CEO of Acme Corp, which is based in New York. \
-        The company specializes in software development and has over 500 employees. \
-        John has been with the company for over 10 years and has led many successful projects."
 
 # tokenize text into individual words and remove stop words
 stop_words = set(nltk.corpus.stopwords.words('english'))
@@ -59,19 +52,10 @@ named_entities = [' '.join(leaf[0] for leaf in subtree.leaves())
 important_words = named_entities + [word for word, pos in pos_tags if pos.startswith(('N', 'V', 'J'))]
 print(important_words)
 
-# # compute TF-IDF scores for important words
-# tfidf = TfidfVectorizer()
-# tfidf_scores = tfidf.fit_transform([text]).toarray()[0]
-# word_scores = dict(zip(tfidf.get_feature_names(), tfidf_scores))
-
-# # sort words by TF-IDF score and select top keywords
-# keywords = sorted(word_scores, key=word_scores.get, reverse=True)[:5]
-
-# print(keywords)  # output: ['john', 'company', 'smith', 'projects', 'ceo']
 
 #Step 3- Split the whole text article into an array/list of individual sentences. This will help us fetch the sentences related to the keywords easily
 
-from nltk.tokenize import sent_tokenize
+
 def splitTextToSents(art):
     s=[sent_tokenize(art)]
     s=[y for x in s for y in x]
@@ -83,7 +67,7 @@ sents=splitTextToSents(text) #Achieve a well splitted set of sentences from the 
 
 #Step 4- Map the sentences which contain the keywords to the related keywords so that we can easily lookup the sentences related to the keywords
 
-from flashtext import KeywordProcessor
+
 def mapSents(impWords,sents):
     processor=KeywordProcessor() #Using keyword processor as our processor for this task
     keySents={}
@@ -104,7 +88,7 @@ mappedSents=mapSents(important_words,sents) #Achieve the sentences that contain 
 
 
 
-nltk.download('all')
+
 
 #Step 5- Get the sense of the word. In order to attain a quality set of distractors we need to get the right sense of the keyword. This is explained in detail in the seperate alogrithm documentation
 
@@ -149,8 +133,7 @@ def getDistractors(syn,word):
 #In that case the ConcepNet comes into play as they help achieve our distractors when there are no hypernyms present for it in the WordNet. More about this is discussed
 #in the algorithm documentation.
 
-import requests
-import json
+
 def getDistractors2(word):
     word=word.lower()
     actword=word
