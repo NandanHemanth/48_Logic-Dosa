@@ -7,7 +7,6 @@ import os
 video_url = input("Enter the URL of the Video :  ")
 
 yt = YouTube(video_url)
-audio = video.audio
 audio_stream = yt.streams.filter(only_audio=True).first()
 
 #download the file
