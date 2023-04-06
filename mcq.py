@@ -1,6 +1,12 @@
 import spacy
 import random
 import en_core_web_sm
+from moviepy.editor import *
+
+video_url = input("Enter the URL of the Video")
+video = VideoFileClip(video_url)
+audio = video.audio
+audio.write_audiofile('autio_to_text.mp3')
 
 nlp = en_core_web_sm.load()
 
