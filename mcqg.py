@@ -172,6 +172,7 @@ def getDistractors2(word):
 
 mappedDists={}
 for each in mappedSents:
+  try:
     wordsense=getWordSense(mappedSents[each][0],each) #gets the sense of the word
     if wordsense: #if the wordsense is not null/none
         dists=getDistractors(wordsense,each) #Gets the WordNet distractors
@@ -183,6 +184,8 @@ for each in mappedSents:
         dists=getDistractors2(each)
         if len(dists)>0: #If it gets the Distractors then maps them
             mappedDists[each]=dists
+  except:
+    pass
 #print(mappedDists)
 
 #Step 9- The final step is to present our MCQ in a nice and readable manner.
