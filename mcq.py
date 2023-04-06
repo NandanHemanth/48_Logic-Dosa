@@ -1,6 +1,21 @@
 import spacy
 import random
 import en_core_web_sm
+from pytube import YouTube
+import os
+
+video_url = input("Enter the URL of the Video :  ")
+
+yt = YouTube(video_url)
+audio = video.audio
+audio_stream = yt.streams.filter(only_audio=True).first()
+
+#download the file
+audio_stream.download(output_path='.', filename='audio_op')
+
+#save the downloaded file with .mp3 extension
+os.rename('audio_op.webm', 'audio_op.mp3')
+
 
 nlp = en_core_web_sm.load()
 
