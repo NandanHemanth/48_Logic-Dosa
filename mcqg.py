@@ -15,6 +15,7 @@ from flashtext import KeywordProcessor
 from nltk.corpus import wordnet as wn
 from nltk.tokenize import sent_tokenize
 import requests
+import tkinter
 import json
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -53,7 +54,6 @@ important_words = named_entities + [word for word, pos in pos_tags if pos.starts
 print(important_words)
 
 
-#Step 3- Split the whole text article into an array/list of individual sentences. This will help us fetch the sentences related to the keywords easily
 
 
 def splitTextToSents(art):
@@ -65,7 +65,6 @@ sents=splitTextToSents(text) #Achieve a well splitted set of sentences from the 
 #print(sents)
 
 
-#Step 4- Map the sentences which contain the keywords to the related keywords so that we can easily lookup the sentences related to the keywords
 
 
 def mapSents(impWords,sents):
@@ -90,7 +89,6 @@ mappedSents=mapSents(important_words,sents) #Achieve the sentences that contain 
 
 
 
-#Step 5- Get the sense of the word. In order to attain a quality set of distractors we need to get the right sense of the keyword. This is explained in detail in the seperate alogrithm documentation
 
 
 def getWordSense(sent,word):
@@ -107,7 +105,6 @@ def getWordSense(sent,word):
         return None
 #print("fin")
 
-#Step 6- Get distractor from WordNet. These distractors work on the basis of hypernym and hyponym explained in detail in the documentation.
 
 def getDistractors(syn,word):
     dists=[]
@@ -129,9 +126,6 @@ def getDistractors(syn,word):
     return dists
 #print("fin")
 
-#Step 7- The primary goal of this step is to take our MCQ quality one step further. The WordNet might some times fail to produce a hypernym for some words.
-#In that case the ConcepNet comes into play as they help achieve our distractors when there are no hypernyms present for it in the WordNet. More about this is discussed
-#in the algorithm documentation.
 
 
 def getDistractors2(word):
@@ -152,7 +146,6 @@ def getDistractors2(word):
                 dists.append(word2)
     return dists
 
-#Step 8- Find and map the distractors to the keywords
 
 mappedDists={}
 for each in mappedSents:
@@ -172,23 +165,33 @@ for each in mappedSents:
     pass
 #print(mappedDists)
 
-#Step 9- The final step is to present our MCQ in a nice and readable manner.
+
+
+
+f=open("mcq.txt","a")
+g=open("mcq_ans.txt","a")
 
 print("**************************************        Multiple Choice Questions        *******************************")
 print()
 import re
 import random
-iterator = 1 #To keep the count of the questions
+iterator = 1 
 for each in mappedDists:
     sent=mappedSents[each][0]
-    p=re.compile(each,re.IGNORECASE) #Converts into regular expression for pattern matching
-    op=p.sub("________",sent) #Replaces the keyword with underscores(blanks)
-    print("Question %s-> "%(iterator),op) #Prints the question along with a question number
-    options=[each.capitalize()]+mappedDists[each] #Capitalizes the options
-    options=options[:4] #Selects only 4 options
+    print(sent)
+    p=re.compile(each,re.IGNORECASE) 
+    g.write("A"+str(iterator)+" "+each+"\n")
+    op=p.sub("________",sent) 
+    print("Question %s-> "%(iterator),op) 
+    f.write("\nQ"+str(iterator)+" "+op)
+    options=[each.capitalize()]+mappedDists[each] 
+    options=options[:4] 
     opts=['a','b','c','d']
-    random.shuffle(options) #Shuffle the options so that order is not always same
+    random.shuffle(options) 
     for i,ch in enumerate(options):
-        print("\t",opts[i],") ", ch) #Print the options
+        print("\t",opts[i],") ", ch) 
+        f.write("\n\t"+opts[i]+" ) "+ ch)
     print()
-    iterator+=1 #Increase the counter
+    iterator+=1 
+f.close()
+g.close()
