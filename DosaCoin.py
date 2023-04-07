@@ -44,7 +44,49 @@ class Blockchain:
             'amount': amount,
         })
         
+        return self.last_block['index'] + 1
     
+    
+    @property
+    def last_block(self):
+        return self.chain[-1]
+    
+    
+    #static method to hash each block and even check the proof of work
+    @staticmethod
+    def hash(block):
+        
+        #THe main Hashing of the data in each block is done here
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
+    
+    def proof_of_work(self, last_block):
+        last_proof = last_block['proof']
+        last_hash = self.hash(last_block)
+        
+        proof = 0
+        while self.valid_proof(last_proof, proof, last_hash) is False:
+            proof += 1
+        return proof
+    
+    @staticmethod
+    def valid_proof(last_proof, proof, last_hash):
+        guess = f'{last_proof}{proof}{last_hash}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+
+        # This is to Adjust your mining difficulty! The more zeroes, the more difficult
+        return guess_hash[:4] == "0000"
+    
+    
+# ---- Below here is the stuff needed for the idea of our blockchain becoming a "distributed ledger." ---- 
+
+    
+    
+        
+        
+        
+        
+        
         
 
 
