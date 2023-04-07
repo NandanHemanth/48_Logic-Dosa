@@ -19,6 +19,7 @@ import tkinter
 import json
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
+import sys
 # nltk.download('stopwords')
 # nltk.download('punkt')
 # nltk.download('popular')
@@ -29,29 +30,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 #Step 1- Import the text file/article that has to be used for MCQ generation
 
-file=open("article.txt","r") #"r" deontes read version open
-text=file.read()
+# path=sys.argv[1]
 
-
-# tokenize text into individual words and remove stop words
-stop_words = set(nltk.corpus.stopwords.words('english'))
-tokens = nltk.word_tokenize(text)
-tokens = [token.lower() for token in tokens if token.isalpha() and token.lower() not in stop_words]
-
-# assign parts of speech to each word
-pos_tags = nltk.pos_tag(tokens)
-
-# identify named entities
-named_entities = nltk.ne_chunk(pos_tags)
-
-# extract named entities from tree structure
-named_entities = [' '.join(leaf[0] for leaf in subtree.leaves())
-                  for subtree in named_entities
-                  if hasattr(subtree, 'label') and subtree.label() == 'NE']
-
-# combine named entities with other important words
-important_words = named_entities + [word for word, pos in pos_tags if pos.startswith(('N', 'V', 'J'))]
-print(important_words)
 
 
 
@@ -61,7 +41,6 @@ def splitTextToSents(art):
     s=[y for x in s for y in x]
     s=[sent.strip() for sent in s if len(sent)>15] #Removes all the sentences that have length less than 15 so that we can ensure that our questions have enough length for context
     return s
-sents=splitTextToSents(text) #Achieve a well splitted set of sentences from the text article
 #print(sents)
 
 
@@ -82,7 +61,6 @@ def mapSents(impWords,sents):
         temp=sorted(temp,key=len,reverse=True) #Sort the sentences according to their decreasing length in order to ensure the quality of question for the MCQ 
         keySents[key]=temp
     return keySents
-mappedSents=mapSents(important_words,sents) #Achieve the sentences that contain the keywords and map those sentences to the keywords using this function
 #print(mappedSents)
 
 
@@ -146,52 +124,80 @@ def getDistractors2(word):
                 dists.append(word2)
     return dists
 
-
-mappedDists={}
-for each in mappedSents:
-  try:
-    wordsense=getWordSense(mappedSents[each][0],each) #gets the sense of the word
-    if wordsense: #if the wordsense is not null/none
-        dists=getDistractors(wordsense,each) #Gets the WordNet distractors
-        if len(dists)==0: #If there are no WordNet distractors available for the current word
-            dists=getDistractors2(each) #The gets the distractors from the ConceptNet API
-        if len(dists)!=0: #If there are indeed distractors from WordNet available, then maps them
-            mappedDists[each]=dists
-    else: #If there is no wordsense, the directly searches/uses the ConceptNet
-        dists=getDistractors2(each)
-        if len(dists)>0: #If it gets the Distractors then maps them
-            mappedDists[each]=dists
-  except:
-    pass
-#print(mappedDists)
+def main(path):
+    file=open(path,"r") #"r" deontes read version open
+    text=file.read()
 
 
+    # tokenize text into individual words and remove stop words
+    stop_words = set(nltk.corpus.stopwords.words('english'))
+    tokens = nltk.word_tokenize(text)
+    tokens = [token.lower() for token in tokens if token.isalpha() and token.lower() not in stop_words]
+
+    # assign parts of speech to each word
+    pos_tags = nltk.pos_tag(tokens)
+
+    # identify named entities
+    named_entities = nltk.ne_chunk(pos_tags)
+
+    # extract named entities from tree structure
+    named_entities = [' '.join(leaf[0] for leaf in subtree.leaves())
+                    for subtree in named_entities
+                    if hasattr(subtree, 'label') and subtree.label() == 'NE']
+
+    # combine named entities with other important words
+    important_words = named_entities + [word for word, pos in pos_tags if pos.startswith(('N', 'V', 'J'))]
+    print(important_words)
+
+    sents=splitTextToSents(text) #Achieve a well splitted set of sentences from the text article
+    mappedSents=mapSents(important_words,sents) #Achieve the sentences that contain the keywords and map those sentences to the keywords using this function
 
 
-f=open("mcq.txt","a")
-g=open("mcq_ans.txt","a")
+    mappedDists={}
+    for each in mappedSents:
+        try:
+            wordsense=getWordSense(mappedSents[each][0],each) #gets the sense of the word
+            if wordsense: #if the wordsense is not null/none
+                dists=getDistractors(wordsense,each) #Gets the WordNet distractors
+                if len(dists)==0: #If there are no WordNet distractors available for the current word
+                    dists=getDistractors2(each) #The gets the distractors from the ConceptNet API
+                if len(dists)!=0: #If there are indeed distractors from WordNet available, then maps them
+                    mappedDists[each]=dists
+            else: #If there is no wordsense, the directly searches/uses the ConceptNet
+                dists=getDistractors2(each)
+                if len(dists)>0: #If it gets the Distractors then maps them
+                    mappedDists[each]=dists
+        except:
+            pass
+    #print(mappedDists)
 
-print("**************************************        Multiple Choice Questions        *******************************")
-print()
-import re
-import random
-iterator = 1 
-for each in mappedDists:
-    sent=mappedSents[each][0]
-    print(sent)
-    p=re.compile(each,re.IGNORECASE) 
-    g.write("A"+str(iterator)+" "+each+"\n")
-    op=p.sub("________",sent) 
-    print("Question %s-> "%(iterator),op) 
-    f.write("\nQ"+str(iterator)+" "+op)
-    options=[each.capitalize()]+mappedDists[each] 
-    options=options[:4] 
-    opts=['a','b','c','d']
-    random.shuffle(options) 
-    for i,ch in enumerate(options):
-        print("\t",opts[i],") ", ch) 
-        f.write("\n\t"+opts[i]+" ) "+ ch)
+
+
+
+
+    f=open("mcq.txt","a")
+    g=open("mcq_ans.txt","a")
+
+    print("**************************************        Multiple Choice Questions        *******************************")
     print()
-    iterator+=1 
-f.close()
-g.close()
+    import re
+    import random
+    iterator = 1 
+    for each in mappedDists:
+        sent=mappedSents[each][0]
+        p=re.compile(each,re.IGNORECASE) 
+        g.write("A"+str(iterator)+" "+each+"\n")
+        op=p.sub("________",sent) 
+        print("Question %s-> "%(iterator),op) 
+        f.write("\nQ"+str(iterator)+" "+op)
+        options=[each.capitalize()]+mappedDists[each] 
+        options=options[:4] 
+        opts=['a','b','c','d']
+        random.shuffle(options) 
+        for i,ch in enumerate(options):
+            print("\t",opts[i],") ", ch) 
+            f.write("\n\t"+opts[i]+" ) "+ ch)
+        print()
+        iterator+=1 
+    f.close()
+    g.close()
