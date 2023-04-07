@@ -5,12 +5,12 @@ import socket
 import  threading
 import requests
 
-local_ip = socket.gethostbyname(socket.gethostbyname())
+local_ip = socket.gethostbyname(socket.gethostname())
 print(local_ip)
 
 #GUI
-window = tk.TK()
-window.tiitle("Video Chat Room with mining crypto")
+window = tk.Tk()
+window.title("Video Chat Room with mining crypto")
 window.geometry('300x200')
 
 label_target_ip = tk.Label(window, text = "Target IP:  ")
