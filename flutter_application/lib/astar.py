@@ -1,6 +1,7 @@
 import pygame
 import math
 from queue import PriorityQueue
+import time
 
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
@@ -95,7 +96,9 @@ def h(p1, p2):
 
 
 def reconstruct_path(came_from, current, draw):
+	
 	while current in came_from:
+		#time.sleep(2)
 		current = came_from[current]
 		current.make_path()
 		draw()
@@ -142,6 +145,7 @@ def algorithm(draw, grid, start, end):
 		draw()
 
 		if current != start:
+			time.sleep(0.2)
 			current.make_closed()
 
 	return False
