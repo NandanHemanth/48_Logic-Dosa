@@ -6,6 +6,7 @@ import  threading
 
 
 local_ip = socket.gethostbyname(socket.gethostname())
+print("User 1")
 print(local_ip)
 
 server = StreamingServer(local_ip, 9999)
