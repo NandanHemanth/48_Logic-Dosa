@@ -45,16 +45,16 @@ label_target_ip.pack()
 text_target_ip = tk.Text(window, height = 1)
 text_target_ip.pack()
 
-btn_listen = tk.Button(window, text = "start listening", width=50)
+btn_listen = tk.Button(window, text = "start listening", width=50, command = start_listening)
 btn_listen.pack(anchor=tk.CENTER, expand=True) 
 
-btn_camera = tk.Button(window, text = "start Camera Stream", width=50)
+btn_camera = tk.Button(window, text = "start Camera Stream", width=50, command = start_camera_stream)
 btn_camera.pack(anchor=tk.CENTER, expand=True) 
 
-btn_stream = tk.Button(window, text = "start Screen Sharing", width=50)
+btn_stream = tk.Button(window, text = "start Screen Sharing", width=50, command=start_screen_sharing)
 btn_stream.pack(anchor=tk.CENTER, expand=True) 
 
-btn_audio = tk.Button(window, text = "start Audio Stream", width=50)
+btn_audio = tk.Button(window, text = "start Audio Stream", width=50, command = start_audio_stream)
 btn_audio.pack(anchor=tk.CENTER, expand=True) 
 
 window.mainloop()
