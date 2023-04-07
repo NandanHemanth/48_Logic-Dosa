@@ -145,7 +145,7 @@ app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 # This should really be a unique UUID to mimic a cypto wallet address, I'm just having fun.
-node_identifier = "Joe's Crypto Wallet'"
+node_identifier = "Nandan's Crypto Mine'"
 
 # Fire up the whole thing
 blockchain = Blockchain()
