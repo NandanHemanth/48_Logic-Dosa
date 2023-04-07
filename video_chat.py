@@ -8,6 +8,32 @@ import requests
 local_ip = socket.gethostbyname(socket.gethostname())
 print(local_ip)
 
+server = StreamingServer(local_ip, 9999)
+receiver = AudioReceiver(local_ip, 8888)
+
+def start_listening():
+    t1 = threading.Thread(target = server.start_server)
+    t2 = threading.Thread(target = receiver.start_server)
+    t1.start()
+    t2.start()
+
+def start_camera_stream():
+    camera_client = CameraClient(text_target_ip.get(1.0, 'end-1c'), 7777)
+    t3= threading.Thread(target = camera_client.start_stream)
+    t3.start()
+
+def start_screen_sharing():
+    screen_client = ScreenShareClient(text_target_ip.get(1.0, 'end-1c'), 7777)
+    t4= threading.Thread(target = screen_client.start_stream)
+    t4.start() 
+
+
+def start_audio_stream():
+    audio_sender = AudioSender(text_target_ip.get(1.0, 'end-1c'), 6666)
+    t5= threading.Thread(target = audio_sender.start_stream)
+    t5.start()
+
+
 #GUI
 window = tk.Tk()
 window.title("Video Chat Room with mining crypto")
