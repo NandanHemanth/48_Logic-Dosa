@@ -74,10 +74,7 @@ class BlockChain:
 
     @staticmethod
     def proof_of_work(last_proof):
-        '''this simple algorithm identifies a number f' such that hash(ff') contain 4 leading zeroes
-         f is the previous f'
-         f' is the new proof
-        '''
+        # WE can control the difficulty of the blockchain with the number of 0's
         proof_no = 0
         while BlockChain.verifying_proof(proof_no, last_proof) is False:
             proof_no += 1
