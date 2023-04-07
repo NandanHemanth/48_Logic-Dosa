@@ -3,7 +3,7 @@ from vidstream import *
 import tkinter as tk
 import socket
 import  threading
-import requests
+
 
 local_ip = socket.gethostbyname(socket.gethostname())
 print(local_ip)
