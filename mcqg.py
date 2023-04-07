@@ -20,6 +20,8 @@ import json
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
+import nltk
+# nltk.download('averaged_perceptron_tagger')
 # nltk.download('stopwords')
 # nltk.download('punkt')
 # nltk.download('popular')
