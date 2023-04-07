@@ -147,7 +147,6 @@ def main(path):
 
     # combine named entities with other important words
     important_words = named_entities + [word for word, pos in pos_tags if pos.startswith(('N', 'V', 'J'))]
-    print(important_words)
 
     sents=splitTextToSents(text) #Achieve a well splitted set of sentences from the text article
     mappedSents=mapSents(important_words,sents) #Achieve the sentences that contain the keywords and map those sentences to the keywords using this function
